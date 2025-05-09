@@ -12,9 +12,29 @@ Batch Normalization is king for stopping this and I want to test how it differs 
 For CIFAR10 & 100 I will need to tune in the capacity a bit.
 
 I want to test a few things (Almost in an Ablation test, but more just comparison.)
-* Batch Normalization: This is to replace the LocalResponseNorm that was in the original paper.
-* Train with Adam instead of the SGD that is in the paper. I forgot how much you have to configure SGD to get it to even learn, I want to see if default Adam deals with issues, and improves over tuned SGD.
-* I want to use torch.optim.lr_scheduler.CosineAnnealingLR(...) instead of torch.optim.lr_scheduler.ReduceLROnPlateau(...).
-* I want to test with Kaiming Init over Gaussian.
-* I want to see if Batch Norm effects dropout.
-* I want to add Global Average Pool to replace the FC layers at the end, see how that effects accuracy.
+* Normalization
+    * LRN (like the paper)
+    * Batch-Norm
+    * Layer-Norm
+* Optimizers
+    * Tuned SGD from AlexNet Paper
+    * Adam -> no tuning
+* LR Schedulers: TEST
+    * ReduceLROnPlateau
+    * StepLR
+    * ExponentialLR
+    * CosineAnnealingLR
+* Activations
+    * ReLU
+    * LeakyReLU
+    * GELU
+    * Swish
+* Init Strategies
+    * Kaiming
+    * Gaussian + the bias (1) for the paper layers
+* Pooling:
+    * Max Pool: Like in the paper
+    * Average pool: modern aproach
+* Dropout: With and without
+* Architecture changes
+    * I want to add Global Average Pool to replace the FC layers at the end, see how that effects accuracy.

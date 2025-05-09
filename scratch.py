@@ -7,7 +7,7 @@ class AlexNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Conv2d(3, 96, kernel_size=11, stride=4, padding=2)
-        self.lrn = nn.LocalResponseNorm(5, k=2, alpha=10e-4, beta=0.75)
+        self.lrn = nn.LocalResponseNorm(5, k=2, alpha=1e-4, beta=0.75)
         self.pool = nn.MaxPool2d(kernel_size=3, stride=2, padding=0)
         self.conv2 = nn.Conv2d(96, 256, kernel_size=5, padding=2)
         self.conv3 = nn.Conv2d(256, 384, kernel_size=3, padding=1)
@@ -58,9 +58,10 @@ model.fc7.bias.data.fill_(1)
 
 loss_fn = nn.CrossEntropyLoss()
 optim = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
+# optim = torch.optim.Adam(model.parameters(), lr=0.01)
 
 # The heuristic which we followed was to divide the learning rate by 10 when the validation error rate stopped improving with the current learning rate.
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, mode='min', factor=0.1, patience=5)
+# scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optim, mode='min', factor=0.1, patience=5)
 
 
 train_data = torch.randn(128, 3, 224, 224)
@@ -70,20 +71,19 @@ val_data = torch.randn(64, 3, 224, 224)
 val_target = torch.randint(0, 1000, (64,))
 
 
-EPOCHS = 100
+EPOCHS = 20
 
 for i in range(EPOCHS):
     logits = model(train_data)
     loss = loss_fn(logits, train_target)
-    print(f"Epoch {i + 1}, Loss: {loss.item():.4f}, LR: {scheduler.get_last_lr()}")
     optim.zero_grad()
     loss.backward()
     optim.step()
 
-    model.eval()
-    with torch.no_grad():
-        val_output = model(val_data)
-        val_loss = loss_fn(val_output, val_target)
-    print(f"Epoch {i + 1}, Train Loss: {loss.item():.4f}, Val Loss: {val_loss.item():.4f}, LR: {scheduler.get_last_lr()}")
+    # model.eval()
+    # with torch.no_grad():
+    #     val_output = model(val_data)
+    #     val_loss = loss_fn(val_output, val_target)
+    print(f"Epoch {i + 1}, Train Loss: {loss.item():.4f}")
     
-    scheduler.step(val_loss.item())
+    # scheduler.step(val_loss.item())
