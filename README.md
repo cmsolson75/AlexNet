@@ -5,13 +5,13 @@ This repo is for testing the original AlexNet paper and feeling what its main is
 
 From initial tests, I noticed that AlexNet is very unstable without the Gaussian init and bias initailization that is said in the paper. You need weight decay and momentum to get the thing to even start leraning. My first thought was that Kaiming Uniform would still be best for the ReLU's used in AlexNet, but i was having convergense issues on my dummy test, I will test again later with CIFAR10 & CIFAR100. 
 
-
-Batch Normalization is king for stopping this and I want to test how it differs when you use batch normalization, I would assume it would have less gradient spikes.
-
-
 For CIFAR10 & 100 I will need to tune in the capacity a bit.
 
 I want to test a few things (Almost in an Ablation test, but more just comparison.)
+* Augmentations
+    * Go heavy with augmentations and see how you do!!!
+* Loaders
+    * Get num workers working on local machine (Have been having bugs)
 * Normalization
     * LRN (like the paper)
     * Batch-Norm

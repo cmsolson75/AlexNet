@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
+from torchvision.transforms import ToTensor
 
 
 class AlexNet(nn.Module):
@@ -87,3 +89,8 @@ for i in range(EPOCHS):
     print(f"Epoch {i + 1}, Train Loss: {loss.item():.4f}")
     
     # scheduler.step(val_loss.item())
+
+
+
+def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader):
+    pass
