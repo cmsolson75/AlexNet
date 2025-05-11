@@ -58,3 +58,4 @@ def evaluate(model, test_loader):
             correct += (pred == y).sum().item()
     model.train()
     print(f"Test Accuracy: {100 * correct // total}%")
+    print("Why no track?")
