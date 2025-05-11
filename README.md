@@ -40,4 +40,4 @@ I want to test a few things (Almost in an Ablation test, but more just compariso
     * I want to add Global Average Pool to replace the FC layers at the end, see how that effects accuracy.
 
 
-MODIFY CODE ON VM TEST
+This is another change
