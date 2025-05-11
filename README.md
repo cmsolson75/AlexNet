@@ -38,3 +38,6 @@ I want to test a few things (Almost in an Ablation test, but more just compariso
 * Dropout: With and without
 * Architecture changes
     * I want to add Global Average Pool to replace the FC layers at the end, see how that effects accuracy.
+
+
+MODIFY CODE ON VM TEST
