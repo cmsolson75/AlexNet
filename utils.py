@@ -29,12 +29,12 @@ def alexnet_gaussian_init(m):
 
 
 
-def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, device):
+def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader, device, writer):
 
     for epoch in range(epochs):
         local_loss = 0
         accumulation = 0
-        for x, y in tqdm(train_loader):
+        for i, (x, y) in enumerate(tqdm(train_loader)):
             x, y = x.to(device), y.to(device)
             logits = model(x)
             loss = loss_fn(logits, y)
@@ -43,19 +43,34 @@ def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, device):
             optimizer.step()
             accumulation += 1
             local_loss += loss.item()
-        print(f"Epoch {epoch + 1}, Train Loss: {local_loss/accumulation:.4f}")
+        model.eval()
+        with torch.no_grad():
+            test_loss = 0
+            n = len(val_loader)
+            for x, y in val_loader:
+                x, y = x.to(device), y.to(device)
+                logits = model(x)
+                test_loss += loss_fn(logits, y).item()
+
+        model.train()
+        writer.add_scalars('Training vs. Validation Loss',
+                { 'Training' : local_loss/accumulation, 'Validation' : test_loss / n },
+                epoch * len(train_loader) + i)
+        writer.flush()
+        print(f"Epoch {epoch + 1}, Train Loss: {local_loss/accumulation:.4f} | Test Loss: {test_loss / n:.4f}")
     return model
 
-def evaluate(model, test_loader):
+def evaluate(model, test_loader, device):
+    print("Testing...")
     model.eval()
     correct = 0
     total = 0
     with torch.no_grad():
         for x, y in tqdm(test_loader):
+            x, y = x.to(device), y.to(device)
             logits = model(x)
             _, pred = torch.max(logits, 1)
             total += y.size(0)
             correct += (pred == y).sum().item()
     model.train()
     print(f"Test Accuracy: {100 * correct // total}%")
-    print("Why no track?")
