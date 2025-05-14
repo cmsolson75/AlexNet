@@ -41,3 +41,20 @@ I want to test a few things (Almost in an Ablation test, but more just compariso
 
 
 This is another change
+
+
+BN
+* Crucial for stability: if you don't add it the model will not learn well.
+
+
+EXPERIMENTS: CIFAR10
+* No Augmentation or Dropout: 20 epochs
+* Augmentation
+* Dropout
+* Augmentation & Dropout
+* Best combo of Normalization & LR Scheduling like in the paper.
+
+
+For this model
+* You have Conv with LRN and Max Pooling
+* To fight overfitting you have capacity, augmentation, and dropout.

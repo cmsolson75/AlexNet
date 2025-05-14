@@ -1,6 +1,7 @@
 # Don't version the data folder
 data/
 __pycache__
+runs/
 
 .Python
 build/

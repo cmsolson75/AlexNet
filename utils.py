@@ -53,11 +53,12 @@ def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader
                 test_loss += loss_fn(logits, y).item()
 
         model.train()
-        writer.add_scalars('Training vs. Validation Loss',
-                { 'Training' : local_loss/accumulation, 'Validation' : test_loss / n },
-                epoch * len(train_loader) + i)
-        writer.flush()
+        writer.add_scalar("Loss/train", local_loss/accumulation, epoch)
+        writer.add_scalar("Loss/test", test_loss / n, epoch)
+
+        
         print(f"Epoch {epoch + 1}, Train Loss: {local_loss/accumulation:.4f} | Test Loss: {test_loss / n:.4f}")
+    writer.flush()
     return model
 
 def evaluate(model, test_loader, device):
