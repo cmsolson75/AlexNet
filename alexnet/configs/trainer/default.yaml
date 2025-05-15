@@ -1,0 +1,5 @@
+max_epochs: 40
+precision: "16-mixed"
+deterministic: false
+devices: 1
+accelerator: "gpu"

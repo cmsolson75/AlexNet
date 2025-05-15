@@ -4,11 +4,11 @@ import torchmetrics
 
 
 class ClassifierTrainingWrapper(L.LightningModule):
-    def __init__(self, classifier, loss_fn, lr):
+    def __init__(self, classifier, loss_fn, optimizer_cfg):
         super().__init__()
         self.classifier = classifier
         self.loss_fn = loss_fn
-        self.lr = lr
+        self.optimizer_cfg = optimizer_cfg
         # Set classes from config
         self.train_acc = torchmetrics.Accuracy(task="multiclass", num_classes=10)
         self.val_acc = torchmetrics.Accuracy(task="multiclass", num_classes=10)
@@ -38,12 +38,15 @@ class ClassifierTrainingWrapper(L.LightningModule):
         self.log("val_acc", self.val_acc, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
-        # Make Optimizer Fully Configurable
+        opt_cfg = self.optimizer_cfg
         optimizer = torch.optim.SGD(
-            self.parameters(), lr=self.lr, momentum=0.9, weight_decay=5e-4
+            self.parameters(), lr=opt_cfg.lr, momentum=opt_cfg.momentum, weight_decay=opt_cfg.weight_decay
         )
 
-        scheduler = torch.optim.lr_scheduler.MultiStepLR(
-            optimizer, milestones=[20, 30], gamma=0.1
-        )
-        return {"optimizer": optimizer, "lr_scheduler": scheduler}
+        sch_cfg = opt_cfg.get("scheduler", None)
+        if sch_cfg is not None:
+            scheduler = torch.optim.lr_scheduler.MultiStepLR(
+                optimizer, milestones=[20, 30], gamma=0.1
+            )
+            return {"optimizer": optimizer, "lr_scheduler": scheduler}
+        return optimizer

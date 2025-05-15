@@ -1,0 +1,69 @@
+dataset:
+  batch_size: 256
+  data_directory: "CIFAR10"
+  num_workers: 7
+
+optimizer:
+  lr: 0.1
+  momentum: 0.9
+  weight_decay: 5e-4
+  scheduler:
+    milestones: [20, 30]
+    gamma: 0.1
+
+
+trainer:
+  max_epochs: 40
+  precision: "16-mixed"
+  deterministic: false
+  devices: 1
+  accelerator: "gpu"
+
+run_name: "default"
+seed: 42
+
+
+model:
+  in_channels: 3
+  out_classes: 10
+  dropout: 0.5
+  activation: "relu"
+  local_response_norm:
+    size: 5
+    alpha: 1e-4
+    beta: 0.75
+    k: 2
+  pool:
+    type: "max"
+    kernel_size: 2
+    stride: 2
+    padding: 0
+  conv1:
+    out_channels: 96
+    kernel_size: 5
+    stride: 1
+    padding: 2
+  conv2:
+    out_channels: 128
+    kernel_size: 5
+    stride: 1
+    padding: 2
+  conv3:
+    out_channels: 256
+    kernel_size: 3
+    stride: 1
+    padding: 1
+  conv4:
+    out_channels: 128
+    kernel_size: 3
+    stride: 1
+    padding: 1
+  conv5:
+    out_channels: 128
+    kernel_size: 3
+    stride: 1
+    padding: 1
+  fc6_out: 1024
+  fc7_out: 512
+
+  

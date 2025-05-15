@@ -1,0 +1,3 @@
+batch_size: 256
+data_directory: "CIFAR10"
+num_workers: 7

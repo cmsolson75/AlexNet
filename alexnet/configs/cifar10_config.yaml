@@ -1,0 +1,19 @@
+defaults:
+  - dataset: cifar10
+  - model: alexnet
+  - optimizer: sgd
+  - trainer: default
+  - _self_
+
+run_name: "large-batch-training"
+trainer:
+  max_epochs: 40
+model:
+  pool:
+    type: "max"
+
+optimizer:
+  lr: 0.1
+dataset:
+  batch_size: 512
+seed: 42
