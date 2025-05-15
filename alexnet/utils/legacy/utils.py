@@ -2,6 +2,7 @@ import torch.nn as nn
 from tqdm import tqdm
 import torch
 
+
 def overfit_single_batch(model, loss_fn, optimizer, train_loader, epochs=20):
     model.train()
     x, y = next(iter(train_loader))
@@ -20,6 +21,7 @@ def overfit_single_batch(model, loss_fn, optimizer, train_loader, epochs=20):
         if param.grad is not None:
             print(name, param.grad.norm().item())
 
+
 def alexnet_gaussian_init(m):
     """We initialized the weights in each layer from a zero-mean Gaussian distribution with standard deviation 0.01."""
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -28,8 +30,16 @@ def alexnet_gaussian_init(m):
             nn.init.constant_(m.bias, 0)
 
 
-
-def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader, device, writer):
+def train(
+    model: nn.Module,
+    optimizer,
+    loss_fn,
+    epochs,
+    train_loader,
+    val_loader,
+    device,
+    writer,
+):
     scheduler = torch.optim.lr_scheduler.MultiStepLR(
         optimizer,
         milestones=[20, 30],
@@ -59,13 +69,15 @@ def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader
         scheduler.step()
 
         model.train()
-        writer.add_scalar("Loss/train", local_loss/accumulation, epoch)
+        writer.add_scalar("Loss/train", local_loss / accumulation, epoch)
         writer.add_scalar("Loss/test", test_loss / n, epoch)
 
-        
-        print(f"Epoch {epoch + 1}, Train Loss: {local_loss/accumulation:.4f} | Test Loss: {test_loss / n:.4f}")
+        print(
+            f"Epoch {epoch + 1}, Train Loss: {local_loss/accumulation:.4f} | Test Loss: {test_loss / n:.4f}"
+        )
     writer.flush()
     return model
+
 
 def evaluate(model, test_loader, device):
     print("Testing...")

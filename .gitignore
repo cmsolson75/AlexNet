@@ -1,7 +1,12 @@
 # Don't version the data folder
-data/
+CIFAR10/
+CIFAR100/
 __pycache__
+lightning_logs/
 runs/
+wandb/
+alexnet-cifar10/
+
 
 .Python
 build/

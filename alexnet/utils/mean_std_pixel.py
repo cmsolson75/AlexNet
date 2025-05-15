@@ -4,8 +4,12 @@ import torchvision.transforms as transforms
 
 
 transform = transforms.ToTensor()
-dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
-loader = torch.utils.data.DataLoader(dataset, batch_size=10000, shuffle=False, num_workers=2)
+dataset = torchvision.datasets.CIFAR10(
+    root="./data", train=True, download=True, transform=transform
+)
+loader = torch.utils.data.DataLoader(
+    dataset, batch_size=10000, shuffle=False, num_workers=2
+)
 
 
 mean = 0.0

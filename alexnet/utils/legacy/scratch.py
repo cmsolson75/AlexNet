@@ -16,12 +16,11 @@ class AlexNet(nn.Module):
         self.conv4 = nn.Conv2d(384, 384, kernel_size=3, padding=1)
         self.conv5 = nn.Conv2d(384, 256, kernel_size=3, padding=1)
 
-        self.fc6 = nn.Linear(256*6*6, 4096)
+        self.fc6 = nn.Linear(256 * 6 * 6, 4096)
         self.fc7 = nn.Linear(4096, 4096)
         self.fc8 = nn.Linear(4096, 1000)
 
         self.dropout = nn.Dropout(p=0.5)
-
 
     def forward(self, x):
         x = self.pool(self.lrn(F.relu(self.conv1(x))))
@@ -38,7 +37,8 @@ class AlexNet(nn.Module):
         x = self.dropout(F.relu(self.fc7(x)))
         x = self.fc8(x)
         return x
-    
+
+
 class CIFAR10AlexNet(nn.Module):
     def __init__(self, classes=10):
         super().__init__()
@@ -57,12 +57,11 @@ class CIFAR10AlexNet(nn.Module):
 
         self.avg_pool = nn.AdaptiveAvgPool2d((6, 6))
 
-        self.fc6 = nn.Linear(256*6*6, 1024)
+        self.fc6 = nn.Linear(256 * 6 * 6, 1024)
         self.fc7 = nn.Linear(1024, 1024)
         self.fc8 = nn.Linear(1024, classes)
 
         self.dropout = nn.Dropout(p=0.5)
-
 
     def forward(self, x):
         x = self.pool(self.lrn(F.relu(self.conv1(x))))
@@ -81,14 +80,13 @@ class CIFAR10AlexNet(nn.Module):
         return x
 
 
-
-
 def alexnet_gaussian_init(m):
     """We initialized the weights in each layer from a zero-mean Gaussian distribution with standard deviation 0.01."""
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
         nn.init.normal_(m.weight, mean=0.0, std=0.01)
         if m.bias is not None:
             nn.init.constant_(m.bias, 0)
+
 
 model = CIFAR10AlexNet()
 model.apply(alexnet_gaussian_init)
@@ -107,7 +105,9 @@ optim = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=
 
 
 def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader):
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, mode="min", factor=0.1, patience=5
+    )
 
     for epoch in range(epochs):
         local_loss = 0
@@ -127,10 +127,11 @@ def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader
         #         val_output = model(x)
         #         val_loss = loss_fn(val_output, y)
         # print(f"Epoch {epoch + 1}, Train Loss: {local_loss/accumulation:.4f}, Val Loss, {val_loss.item():.4f}")
-        
+
         # scheduler.step(val_loss.item())
         # model.train()
     return model
+
 
 def evaluate(model, test_loader):
     model.eval()
@@ -158,4 +159,3 @@ if __name__ == "__main__":
     print("Targets:", y[:10].tolist())
     print("Unique preds:", pred.unique())
     evaluate(model, test_loader)
-

@@ -5,25 +5,19 @@ This repo is for testing the original AlexNet paper and feeling what its main is
 
 From initial tests, I noticed that AlexNet is very unstable without the Gaussian init and bias initailization that is said in the paper. You need weight decay and momentum to get the thing to even start leraning. My first thought was that Kaiming Uniform would still be best for the ReLU's used in AlexNet, but i was having convergense issues on my dummy test, I will test again later with CIFAR10 & CIFAR100. 
 
+Tech Plan
+* PyTorch: For main components
+* Pytorch-Lighting: for Training Wrapping
+* W&B: for Logging
+* YAML/HYDRA for config
+* Optuna for sweeping.
+
 For CIFAR10 & 100 I will need to tune in the capacity a bit.
 
 I want to test a few things (Almost in an Ablation test, but more just comparison.)
-* Augmentations
-    * Go heavy with augmentations and see how you do!!!
-* Loaders
-    * Get num workers working on local machine (Have been having bugs)
-* Normalization
-    * LRN (like the paper)
-    * Batch-Norm
-    * Layer-Norm
 * Optimizers
     * Tuned SGD from AlexNet Paper
     * Adam -> no tuning
-* LR Schedulers: TEST
-    * ReduceLROnPlateau
-    * StepLR
-    * ExponentialLR
-    * CosineAnnealingLR
 * Activations
     * ReLU
     * LeakyReLU
@@ -50,7 +44,7 @@ EXPERIMENTS: CIFAR10
     * Test Accuracy: 78%
 * Augmentation & Dropout
     * Test Accuracy: 78%
-* Best combo of Normalization & LR Scheduling like in the paper.
+* Best combo of Normalization & LR Scheduling like in the paper: 40 epochs
     * Test Accuracy: 86%
     ```
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[20, 30], gamma=0.1,)
@@ -60,3 +54,12 @@ EXPERIMENTS: CIFAR10
 For this model
 * You have Conv with LRN and Max Pooling
 * To fight overfitting you have capacity, augmentation, and dropout.
+
+
+
+
+Configuration Notes
+* Be able to change LRN
+* Be able to swap out the pooling method
+* Be able to change out the Activation
+* Add optimizer config through **KWARGS

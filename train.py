@@ -1,20 +1,40 @@
-from model import CIFAR10AlexNet
-from utils import train, evaluate
 import torch
+
+torch.set_float32_matmul_precision("high")
+
+from alexnet.models.cifar10_alexnet import CIFAR10AlexNet
+from alexnet.data.dataset import create_cifar10_dataloader_from_config
+from alexnet.training.classifier import ClassifierTrainingWrapper
 import torch.nn as nn
-from data_test import train_loader, test_loader
-from torch.utils.tensorboard import SummaryWriter
+from omegaconf import OmegaConf
+from pathlib import Path
+import lightning as L
+from lightning.pytorch.loggers import WandbLogger
+from lightning import seed_everything
 
 
-writer = SummaryWriter()
 
-model = CIFAR10AlexNet()
+
+def load_config(path: str) -> dict:
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Config file not found: {path}")
+    return OmegaConf.load(path)
+
+
+config = load_config("/home/cameronolson/documents/AlexNet/alexnet/configs/config.yaml")
+seed_everything(config.seed)
+
+wandb_logger = WandbLogger(
+    project="alexnet-cifar10",
+    name="exp-001",
+    config=OmegaConf.to_container(config, resolve=True),
+)
+
+train_loader = create_cifar10_dataloader_from_config(config.dataset, train=True)
+test_loader = create_cifar10_dataloader_from_config(config.dataset, train=False)
+model = CIFAR10AlexNet(config)
 loss_fn = nn.CrossEntropyLoss()
-optim = torch.optim.SGD(model.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)
-model = train(model, optim, loss_fn, 40, train_loader, test_loader, device, writer)
-evaluate(model, test_loader, device)
-
-writer.close()
+model = ClassifierTrainingWrapper(model, loss_fn, config.optimizer.lr)
+trainer = L.Trainer(**config.trainer, logger=wandb_logger)
+trainer.fit(model=model, train_dataloaders=train_loader, val_dataloaders=test_loader)
