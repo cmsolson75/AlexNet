@@ -40,19 +40,21 @@ I want to test a few things (Almost in an Ablation test, but more just compariso
     * I want to add Global Average Pool to replace the FC layers at the end, see how that effects accuracy.
 
 
-This is another change
-
-
-BN
-* Crucial for stability: if you don't add it the model will not learn well.
-
 
 EXPERIMENTS: CIFAR10
 * No Augmentation or Dropout: 20 epochs
+    * 74% accuracy
 * Augmentation
+    * Test Accuracy: 77%
 * Dropout
+    * Test Accuracy: 78%
 * Augmentation & Dropout
+    * Test Accuracy: 78%
 * Best combo of Normalization & LR Scheduling like in the paper.
+    * Test Accuracy: 86%
+    ```
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[20, 30], gamma=0.1,)
+    ```
 
 
 For this model

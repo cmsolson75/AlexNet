@@ -30,6 +30,11 @@ def alexnet_gaussian_init(m):
 
 
 def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader, device, writer):
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(
+        optimizer,
+        milestones=[20, 30],
+        gamma=0.1,
+    )
 
     for epoch in range(epochs):
         local_loss = 0
@@ -51,6 +56,7 @@ def train(model: nn.Module, optimizer, loss_fn, epochs, train_loader, val_loader
                 x, y = x.to(device), y.to(device)
                 logits = model(x)
                 test_loss += loss_fn(logits, y).item()
+        scheduler.step()
 
         model.train()
         writer.add_scalar("Loss/train", local_loss/accumulation, epoch)
