@@ -46,7 +46,7 @@ class ClassifierTrainingWrapper(L.LightningModule):
         sch_cfg = opt_cfg.get("scheduler", None)
         if sch_cfg is not None:
             scheduler = torch.optim.lr_scheduler.MultiStepLR(
-                optimizer, milestones=[20, 30], gamma=0.1
+                optimizer, milestones=sch_cfg.milestones, gamma=sch_cfg.gamma
             )
             return {"optimizer": optimizer, "lr_scheduler": scheduler}
         return optimizer

@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 from omegaconf import DictConfig
 
-
+# Should just name this AlexNet and use this as a base class for building all the next
+# Would just end up changing the yaml file for model, making a new one: Like Cifar10Alexnet and more.
 class CIFAR10AlexNet(nn.Module):
     def __init__(self, cfg: DictConfig):
         super().__init__()

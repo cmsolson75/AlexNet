@@ -10,6 +10,7 @@ def alexnet_gaussian_init(m):
         if m.bias is not None:
             nn.init.constant_(m.bias, 0)
 
+# Should implement this as a CONFIG instead of its own file
 
 # Implementation from
 # ImageNet Classiﬁcation with Deep Convolutional Neural Networks

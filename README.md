@@ -36,6 +36,7 @@ I want to test a few things (Almost in an Ablation test, but more just compariso
 
 
 EXPERIMENTS: CIFAR10
+* Link to model file [file_link](/alexnet/configs/model/alexnet.yaml)
 * No Augmentation or Dropout: 20 epochs
     * 74% accuracy
 * Augmentation
@@ -58,8 +59,15 @@ For this model
 
 
 
-Configuration Notes
-* Be able to change LRN
-* Be able to swap out the pooling method
-* Be able to change out the Activation
-* Add optimizer config through **KWARGS
+REAL TODO
+* Make CIFAR10AlexNet just alexnet and have the original alexnet defined as a unique model config, like PaperAlexNet.yaml or something.
+* Make TinyImageNet Model: https://paperswithcode.com/dataset/tiny-imagenet
+* Checkpoint saving and loading: VIA CONFIG
+    * Test Fine Tuning and Layer Freezing: CIFAR100 transfer trained to CIFAR10 by just modifying the prediction head.
+* Structued Configs
+* Evaluate.py: For loading a checkpoing and evaluating it
+* Remove legacy code
+* Optuna: I have the ability to sweep so i shall!
+    * Review Optuna with PTL
+    * Use Hydra-Optuna-Sweeper plugin:
+        * Use for optimizing layer size and hyperparameters like LR & more.
