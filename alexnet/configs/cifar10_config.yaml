@@ -13,7 +13,7 @@ model:
     type: "max"
 
 optimizer:
-  lr: 0.1
+  lr: 0.01
 dataset:
-  batch_size: 512
+  batch_size: 128
 seed: 42
