@@ -2,9 +2,7 @@ import torch
 import torch.nn as nn
 from omegaconf import DictConfig
 
-# Should just name this AlexNet and use this as a base class for building all the next
-# Would just end up changing the yaml file for model, making a new one: Like Cifar10Alexnet and more.
-class CIFAR10AlexNet(nn.Module):
+class AlexNet(nn.Module):
     def __init__(self, cfg: DictConfig):
         super().__init__()
         c: DictConfig = cfg.model
@@ -24,10 +22,10 @@ class CIFAR10AlexNet(nn.Module):
         self.conv4 = self._make_conv(c.conv3.out_channels, c.conv4)
         self.conv5 = self._make_conv(c.conv4.out_channels, c.conv5)
 
-        self.shape_norm = nn.AdaptiveAvgPool2d((4, 4))
+        self.shape_norm = nn.AdaptiveAvgPool2d((c.shape_norm, c.shape_norm))
 
         # Classifier
-        flattened_dim = c.conv5.out_channels * 4 * 4
+        flattened_dim = c.conv5.out_channels * c.shape_norm * c.shape_norm
         self.fc6 = nn.Linear(flattened_dim, c.fc6_out)
         self.fc7 = nn.Linear(c.fc6_out, c.fc7_out)
         self.fc8 = nn.Linear(c.fc7_out, c.out_classes)

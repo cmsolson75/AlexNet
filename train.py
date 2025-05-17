@@ -5,7 +5,7 @@ from lightning import seed_everything
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
 
-from alexnet.models.cifar10_alexnet import CIFAR10AlexNet
+from alexnet.models.alexnet import AlexNet
 from alexnet.data.dataset import create_cifar10_dataloader_from_config
 from alexnet.training.classifier import ClassifierTrainingWrapper
 
@@ -22,7 +22,7 @@ def main(cfg: DictConfig):
     )
     train_loader = create_cifar10_dataloader_from_config(cfg.dataset, train=True)
     test_loader = create_cifar10_dataloader_from_config(cfg.dataset, train=False)
-    model = CIFAR10AlexNet(cfg)
+    model = AlexNet(cfg)
     loss_fn = torch.nn.CrossEntropyLoss()
     model = ClassifierTrainingWrapper(model, loss_fn, cfg.optimizer)
     trainer = L.Trainer(**cfg.trainer, logger=wandb_logger)

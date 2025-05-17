@@ -1,9 +1,11 @@
 defaults:
   - dataset: cifar10
-  - model: alexnet
+  - model: cifar10_small
   - optimizer: sgd
   - trainer: default
   - _self_
 
+project_name: "cifar10_small"
+checkpoint: False # Something needed for this as a path
 run_name: "alexnet-cifar10"
 seed: 42
