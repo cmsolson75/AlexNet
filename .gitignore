@@ -6,6 +6,7 @@ lightning_logs/
 runs/
 wandb/
 alexnet-cifar10/
+cifar100-alexnet/
 outputs/
 
 

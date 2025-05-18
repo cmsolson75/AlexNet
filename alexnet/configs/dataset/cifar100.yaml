@@ -1,0 +1,4 @@
+batch_size: 256
+data_directory: "CIFAR100"
+num_workers: 7
+dataset_name: "cifar100"

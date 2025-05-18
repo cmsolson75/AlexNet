@@ -16,14 +16,14 @@ if __name__ == "__main__":
 
     with initialize(version_base=None, config_path=args.config_path):
         cfg = compose(config_name=args.config_name)
-    
+
     wrapped_model = AlexNet(cfg)
     loss_fn = torch.nn.CrossEntropyLoss()
     lightning_model = ClassifierTrainingWrapper.load_from_checkpoint(
         checkpoint_path=args.ckpt_path,
         classifier=wrapped_model,
         loss_fn=loss_fn,
-        optimizer_cfg=cfg.optimizer
+        optimizer_cfg=cfg.optimizer,
     )
 
     unwrapped_model = lightning_model.classifier

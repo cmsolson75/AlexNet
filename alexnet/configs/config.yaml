@@ -1,19 +1,21 @@
 defaults:
-  - dataset: cifar10
-  - model: cifar10_small
+  - dataset: cifar100
+  - model: cifar100
   - optimizer: sgd
   - trainer: default
+  - checkpoint: default
   - _self_
 
-run_name: "large-batch-training"
+run_name: "first-test"
+checkpoint:
+  resume:
+    ckpt_path: /home/cameronolson/documents/AlexNet/cifar100-alexnet/gvkv02pt/checkpoints/last.ckpt
+project: "cifar100-alexnet"
 trainer:
-  max_epochs: 10
-model:
-  pool:
-    type: "max"
-
+  max_epochs: 100
 optimizer:
   lr: 0.01
 dataset:
-  batch_size: 128
+  batch_size: 256
+
 seed: 42

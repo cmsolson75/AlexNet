@@ -1,0 +1,44 @@
+in_channels: 3
+out_classes: 100
+dropout: 0.5
+activation: "relu"
+local_response_norm:
+  size: 5
+  alpha: 1e-4
+  beta: 0.75
+  k: 2
+pool:
+  type: "max"
+  kernel_size: 2
+  stride: 2
+  padding: 0
+conv1:
+  out_channels: 96
+  kernel_size: 5
+  stride: 1
+  padding: 2
+conv2:
+  out_channels: 128
+  kernel_size: 5
+  stride: 1
+  padding: 2
+conv3:
+  out_channels: 256
+  kernel_size: 3
+  stride: 1
+  padding: 1
+conv4:
+  out_channels: 128
+  kernel_size: 3
+  stride: 1
+  padding: 1
+conv5:
+  out_channels: 128
+  kernel_size: 3
+  stride: 1
+  padding: 1
+shape_norm: 4
+fc6_out: 1024
+fc7_out: 512
+
+  

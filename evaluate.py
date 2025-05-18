@@ -6,7 +6,7 @@ from hydra import initialize, compose
 from omegaconf import OmegaConf
 
 from alexnet.models.alexnet import AlexNet
-from alexnet.data.dataset import create_cifar10_dataloader_from_config
+from alexnet.data.factory import create_dataloader_from_config
 
 
 def evaluate(model: torch.nn.Module, test_loader: DataLoader, device: torch.device):
@@ -24,6 +24,7 @@ def evaluate(model: torch.nn.Module, test_loader: DataLoader, device: torch.devi
     model.train()
     print(f"Test Accuracy: {100 * correct // total}%")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config-path", type=str, default="alexnet/configs")
@@ -33,7 +34,7 @@ if __name__ == "__main__":
 
     with initialize(version_base=None, config_path=args.config_path):
         cfg = compose(config_name=args.config_name)
-    
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = AlexNet(cfg)
@@ -41,6 +42,5 @@ if __name__ == "__main__":
     model.to(device)
 
     # Will make this configurable to the dataset I am training on
-    test_loader = create_cifar10_dataloader_from_config(cfg.dataset, train=False)
+    test_loader = create_dataloader_from_config(cfg.dataset, train=False)
     evaluate(model, test_loader, device)
-    

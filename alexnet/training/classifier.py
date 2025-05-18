@@ -1,17 +1,19 @@
 import lightning as L
 import torch
 import torchmetrics
+from omegaconf import DictConfig
 
 
 class ClassifierTrainingWrapper(L.LightningModule):
-    def __init__(self, classifier, loss_fn, optimizer_cfg):
+    def __init__(self, classifier, loss_fn, cfg: DictConfig):
         super().__init__()
         self.classifier = classifier
         self.loss_fn = loss_fn
-        self.optimizer_cfg = optimizer_cfg
+        self.optimizer_cfg = cfg.optimizer
+
         # Set classes from config
-        self.train_acc = torchmetrics.Accuracy(task="multiclass", num_classes=10)
-        self.val_acc = torchmetrics.Accuracy(task="multiclass", num_classes=10)
+        self.train_acc = torchmetrics.Accuracy(task="multiclass", num_classes=cfg.model.out_classes)
+        self.val_acc = torchmetrics.Accuracy(task="multiclass", num_classes=cfg.model.out_classes)
 
     def forward(self, x):
         return self.classifier(x)
@@ -40,7 +42,10 @@ class ClassifierTrainingWrapper(L.LightningModule):
     def configure_optimizers(self):
         opt_cfg = self.optimizer_cfg
         optimizer = torch.optim.SGD(
-            self.parameters(), lr=opt_cfg.lr, momentum=opt_cfg.momentum, weight_decay=opt_cfg.weight_decay
+            self.parameters(),
+            lr=opt_cfg.lr,
+            momentum=opt_cfg.momentum,
+            weight_decay=opt_cfg.weight_decay,
         )
 
         sch_cfg = opt_cfg.get("scheduler", None)

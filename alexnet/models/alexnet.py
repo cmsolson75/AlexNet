@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from omegaconf import DictConfig
 
+
 class AlexNet(nn.Module):
     def __init__(self, cfg: DictConfig):
         super().__init__()
