@@ -5,7 +5,15 @@ defaults:
   - trainer: default
   - _self_
 
-project_name: "cifar10_small"
-checkpoint: False # Something needed for this as a path
-run_name: "alexnet-cifar10"
+run_name: "large-batch-training"
+trainer:
+  max_epochs: 10
+model:
+  pool:
+    type: "max"
+
+optimizer:
+  lr: 0.01
+dataset:
+  batch_size: 128
 seed: 42
