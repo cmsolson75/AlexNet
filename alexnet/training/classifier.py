@@ -10,8 +10,6 @@ class ClassifierTrainingWrapper(L.LightningModule):
         self.classifier = classifier
         self.loss_fn = loss_fn
         self.optimizer_cfg = cfg.optimizer
-
-        # Set classes from config
         self.train_acc = torchmetrics.Accuracy(task="multiclass", num_classes=cfg.model.out_classes)
         self.val_acc = torchmetrics.Accuracy(task="multiclass", num_classes=cfg.model.out_classes)
 
