@@ -1,6 +1,11 @@
+import hashlib
+from pathlib import Path
+
 import hydra
 import torch
 from omegaconf import DictConfig, OmegaConf
+from hydra.utils import get_original_cwd
+
 from lightning import seed_everything
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
@@ -25,10 +30,17 @@ def create_checkpoint_callback(cfg):
 @hydra.main(version_base=None, config_path="alexnet/configs", config_name="config")
 def main(cfg: DictConfig):
     seed_everything(cfg.seed)
+    # Hash config: For naming later.
+    cfg_hash = hashlib.md5(str(OmegaConf.to_container(cfg, resolve=True)).encode()).hexdigest()[:8]
+    run_name = f"{cfg.run_name}_{cfg_hash}"
+
+    # Machine-independent output path
+    default_root_dir = Path(get_original_cwd()) / "outputs" / cfg.project / run_name
+    default_root_dir.mkdir(parents=True, exist_ok=True)
 
     wandb_logger = WandbLogger(
         project=cfg.project,
-        name=cfg.run_name,
+        name=run_name,
         config=OmegaConf.to_container(cfg, resolve=True),
     )
     # Needs to be configurable: use a factory for different datasets
@@ -38,13 +50,14 @@ def main(cfg: DictConfig):
     model = AlexNet(cfg)
     loss_fn = torch.nn.CrossEntropyLoss()
     wrapper = ClassifierTrainingWrapper(model, loss_fn, cfg)
-
-    checkpoint_callback = create_checkpoint_callback(cfg)
+    checkpoint_dir = default_root_dir / "checkpoints"
+    checkpoint_callback = create_checkpoint_callback(cfg, checkpoint_dir)
 
     trainer = L.Trainer(
         **cfg.trainer,
         logger=wandb_logger,
         callbacks=[checkpoint_callback],
+        default_root_dir=str(default_root_dir)
     )
     trainer.fit(
         model=wrapper,

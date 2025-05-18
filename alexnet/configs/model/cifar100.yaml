@@ -18,27 +18,27 @@ conv1:
   stride: 1
   padding: 2
 conv2:
-  out_channels: 128
+  out_channels: 256
   kernel_size: 5
   stride: 1
   padding: 2
 conv3:
-  out_channels: 256
+  out_channels: 384
   kernel_size: 3
   stride: 1
   padding: 1
 conv4:
-  out_channels: 128
+  out_channels: 384
   kernel_size: 3
   stride: 1
   padding: 1
 conv5:
-  out_channels: 128
+  out_channels: 256
   kernel_size: 3
   stride: 1
   padding: 1
 shape_norm: 4
 fc6_out: 1024
-fc7_out: 512
+fc7_out: 1024
 
   

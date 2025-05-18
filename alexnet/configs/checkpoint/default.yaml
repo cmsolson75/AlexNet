@@ -1,5 +1,5 @@
 save_last: true
-filename: "epoch={epoch}-step={step}"
+filename: "{epoch}-{step}"
 every_n_train_steps: 1000
 every_n_epochs: null
 resume:

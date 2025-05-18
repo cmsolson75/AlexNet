@@ -6,15 +6,22 @@ defaults:
   - checkpoint: default
   - _self_
 
-run_name: "first-test"
+run_name: "lclr-average-pool"
 checkpoint:
   resume:
-    ckpt_path: /home/cameronolson/documents/AlexNet/cifar100-alexnet/gvkv02pt/checkpoints/last.ckpt
+    ckpt_path: null
 project: "cifar100-alexnet"
 trainer:
-  max_epochs: 100
+  max_epochs: 5
 optimizer:
-  lr: 0.01
+  lr: 0.1
+  scheduler:
+    milestones: [30, 40, 50]
+    gamma: 0.1
+model:
+  activation: "leaky_relu"
+  pool:
+    type: "average"
 dataset:
   batch_size: 256
 
