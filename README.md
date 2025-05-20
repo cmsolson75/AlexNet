@@ -47,8 +47,6 @@ pip install -r requirements.txt
 
 ---
 
-This sequence ensures a reproducible setup flow: clone → environment → install.
-
 
 ## Dependencies
 
