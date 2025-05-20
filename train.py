@@ -26,21 +26,18 @@ def create_checkpoint_callback(cfg, dirpath):
         save_last=cfg.checkpoint.save_last,
         every_n_train_steps=cfg.checkpoint.every_n_train_steps,
         every_n_epochs=cfg.checkpoint.every_n_epochs,
+        save_top_k=-1,
     )
 
 
 @hydra.main(version_base=None, config_path="alexnet/configs", config_name="config")
 def main(cfg: DictConfig):
     seed_everything(cfg.seed)
-    # Hash config: For naming later.
     cfg_hash = hashlib.md5(str(OmegaConf.to_container(cfg, resolve=True)).encode()).hexdigest()[:8]
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_name = f"{cfg.run_name}_{cfg_hash}_{timestamp}"
-
-    # Machine-independent output path
     default_root_dir = Path(get_original_cwd()) / "outputs" / cfg.project / run_name
     default_root_dir.mkdir(parents=True, exist_ok=True)
-    print(default_root_dir)
 
     wandb_logger = WandbLogger(
         project=cfg.project,

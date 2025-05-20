@@ -1,38 +1,143 @@
-## AlexNet Legacy Implementation
 
-This repo is for testing the original AlexNet paper and feeling what its main issues are, this is not for maximizing performance, and is just a small project I am doing to understand it better. If you find this interesting I am glad. 
+# AlexNet Legacy Implementation
 
-Tech Plan
-* PyTorch: For main components
-* Pytorch-Lighting: for Training Wrapping
-* W&B: for Logging
-* YAML/HYDRA for config
-* Optuna for sweeping.
+This repository contains a Hydra-configured, PyTorch Lightning-based implementation of the AlexNet architecture for CIFAR-10 and CIFAR-100 datasets. The project is designed for experimental and diagnostic purposes, not production use or performance benchmarking.
+
+---
+
+## Project Structure
+````
+alexnet/
+├── configs/             # Hydra configuration files
+│   ├── checkpoint/
+│   ├── dataset/
+│   ├── model/
+│   ├── optimizer/
+│   └── trainer/
+├── data/                # Data loading logic
+├── models/              # AlexNet architecture
+├── training/            # Lightning training wrapper
+
+````
 
 
-TODO
-* Checkpoint Naming and Rate issues: Get a unified name.
-* Optuna: I have the ability to sweep so i shall!
-    * Review Optuna with PTL
-    * Use Hydra-Optuna-Sweeper plugin:
-        * Use for optimizing layer size and hyperparameters like LR & more.
-        * Run this on CIFAR100 model
-* Make TinyImageNet Model: https://paperswithcode.com/dataset/tiny-imagenet
-* Update the Hydra Config system to be more Idiomatic with Hydra. I am not using important features that I want to try.
-* Improve README.md to make it functional for a archived style repo (I will not come back to this)
+## Environment Setup
 
-EXPERIMENTS: CIFAR10
-* Link to model file [file_link](/alexnet/configs/model/alexnet.yaml)
-* No Augmentation or Dropout: 20 epochs
-    * 74% accuracy
-* Augmentation
-    * Test Accuracy: 77%
-* Dropout
-    * Test Accuracy: 78%
-* Augmentation & Dropout
-    * Test Accuracy: 78%
-* Best combo of Normalization & LR Scheduling like in the paper: 40 epochs
-    * Test Accuracy: 86%
-    ```
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[20, 30], gamma=0.1,)
-    ```
+This project uses **Python 3.10**. Development was done using **conda** for environment management and **pip** for dependency resolution.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/https://github.com/cmsolson75/AlexNet.git
+cd AlexNet
+```
+
+### 2. Create and Activate Environment
+
+```bash
+conda create -n alexnet python=3.10
+conda activate alexnet
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+This sequence ensures a reproducible setup flow: clone → environment → install.
+
+
+## Dependencies
+
+All runtime dependencies are specified in `requirements.txt`. Key libraries:
+
+* `torch`
+* `torchvision`
+* `lightning`
+* `wandb`
+* `omegaconf`
+* `hydra-core`
+* `torchmetrics`
+* `tqdm`
+
+---
+
+## Configuration System
+
+Hydra is used to compose configuration files located under `alexnet/configs/`.
+
+Primary config:
+`alexnet/configs/config.yaml`
+
+Modular components:
+
+* `dataset/` — Dataset-specific parameters (e.g. batch size, location)
+* `model/` — AlexNet architecture variants
+* `optimizer/` — SGD and LR scheduler
+* `trainer/` — Lightning trainer settings
+* `checkpoint/` — Checkpointing frequency and naming
+
+Override configs at runtime as needed:
+
+```bash
+python train.py model.pool.type=average optimizer.lr=0.01
+```
+
+
+---
+
+## Training
+Before starting, log into Weights & Biases (only required once per machine):
+
+```
+wandb login
+```
+Then launch training
+```bash
+python train.py
+```
+
+This will:
+
+* Load config from `alexnet/configs/config.yaml`
+* Create experiment-specific output directory:
+  `outputs/<project>/<run_name>/`
+* Log training to Weights & Biases
+* Save checkpoints via Lightning
+
+---
+
+## Evaluation
+
+```bash
+python evaluate.py \
+    --model-path path/to/model.pth
+```
+
+This uses the test loader for the dataset defined in the active config.
+
+---
+
+## Unwrap Trained Model
+
+Use this to strip the Lightning wrapper and extract the raw AlexNet model:
+
+```bash
+python unwrap_model.py \
+    --ckpt-path path/to/lightning.ckpt \
+    --output-path path/to/alexnet.pth
+```
+
+---
+
+## Notes
+
+* Run names include a deterministic hash of the config and a timestamp.
+* Checkpoints and logs are stored in machine-independent paths.
+* All configurations are reproducible with fixed seeds.
+
+---
+

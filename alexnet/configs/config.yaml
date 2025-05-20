@@ -6,22 +6,18 @@ defaults:
   - checkpoint: default
   - _self_
 
-run_name: "lclr-average-pool"
-checkpoint:
-  resume:
-    ckpt_path: null
+
 project: "cifar100-alexnet"
+run_name: "lclr-average-pool"
+
+
 trainer:
-  max_epochs: 40
+  max_epochs: 5
 optimizer:
   lr: 0.1
   scheduler:
     milestones: [30, 40, 50]
     gamma: 0.1
-model:
-  activation: "leaky_relu"
-  pool:
-    type: "average"
 dataset:
   batch_size: 256
 

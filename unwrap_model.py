@@ -23,7 +23,7 @@ if __name__ == "__main__":
         checkpoint_path=args.ckpt_path,
         classifier=wrapped_model,
         loss_fn=loss_fn,
-        optimizer_cfg=cfg.optimizer,
+        cfg=cfg,
     )
 
     unwrapped_model = lightning_model.classifier
