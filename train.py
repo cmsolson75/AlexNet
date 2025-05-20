@@ -1,4 +1,5 @@
 import hashlib
+from datetime import datetime
 from pathlib import Path
 
 import hydra
@@ -18,8 +19,9 @@ from alexnet.training.classifier import ClassifierTrainingWrapper
 torch.set_float32_matmul_precision("high")
 
 
-def create_checkpoint_callback(cfg):
+def create_checkpoint_callback(cfg, dirpath):
     return ModelCheckpoint(
+        dirpath=dirpath,
         filename=cfg.checkpoint.filename,
         save_last=cfg.checkpoint.save_last,
         every_n_train_steps=cfg.checkpoint.every_n_train_steps,
@@ -32,11 +34,13 @@ def main(cfg: DictConfig):
     seed_everything(cfg.seed)
     # Hash config: For naming later.
     cfg_hash = hashlib.md5(str(OmegaConf.to_container(cfg, resolve=True)).encode()).hexdigest()[:8]
-    run_name = f"{cfg.run_name}_{cfg_hash}"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_name = f"{cfg.run_name}_{cfg_hash}_{timestamp}"
 
     # Machine-independent output path
     default_root_dir = Path(get_original_cwd()) / "outputs" / cfg.project / run_name
     default_root_dir.mkdir(parents=True, exist_ok=True)
+    print(default_root_dir)
 
     wandb_logger = WandbLogger(
         project=cfg.project,
@@ -50,8 +54,7 @@ def main(cfg: DictConfig):
     model = AlexNet(cfg)
     loss_fn = torch.nn.CrossEntropyLoss()
     wrapper = ClassifierTrainingWrapper(model, loss_fn, cfg)
-    checkpoint_dir = default_root_dir / "checkpoints"
-    checkpoint_callback = create_checkpoint_callback(cfg, checkpoint_dir)
+    checkpoint_callback = create_checkpoint_callback(cfg, default_root_dir)
 
     trainer = L.Trainer(
         **cfg.trainer,
